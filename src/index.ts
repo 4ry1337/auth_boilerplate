@@ -15,6 +15,7 @@ class Server {
     this.config()
     this.server = http.createServer(this.app)
     this.database()
+    this.storage()
     this.routes()
   }
 
@@ -51,6 +52,10 @@ class Server {
   }
 
   public database(): void {}
+
+  public storage(): void {
+    
+  }
 
   public start(): void {
     this.server.listen(this.app.get("port"), () => {
