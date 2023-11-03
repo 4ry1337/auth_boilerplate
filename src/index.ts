@@ -1,21 +1,28 @@
 import express, {Response, Request, Application, NextFunction} from "express"
+import * as Minio from "minio"
+import {PrismaClient} from "@prisma/client"
 import http from "http"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import compression from "compression"
 import cors from "cors"
 import {CustomError} from "./shared/exceptions"
+import * as dotenv from "dotenv"
+dotenv.config()
 
 class Server {
   public app: Application
   public server: http.Server
+  public minio: Minio.Client
+  public prismadb: PrismaClient
 
   constructor() {
     this.app = express()
     this.config()
     this.server = http.createServer(this.app)
-    this.database()
-    this.storage()
+    this.minio = this.storage()
+    this.prismadb = this.database()
+    //this.storage()
     this.routes()
   }
 
@@ -51,10 +58,17 @@ class Server {
     this.app.use(bodyParser.json())
   }
 
-  public database(): void {}
+  public database(): PrismaClient {
+    return new PrismaClient()
+  }
 
-  public storage(): void {
-    
+  public storage(): Minio.Client {
+    return new Minio.Client({
+      port: Number(process.env.MINIO_PORT!),
+      endPoint: process.env.MINIO_ENDPOINT!,
+      accessKey: process.env.MINIO_ACCESS_KEY!,
+      secretKey: process.env.MINIO_SECRET_KEY!,
+    })
   }
 
   public start(): void {
