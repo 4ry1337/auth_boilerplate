@@ -15,6 +15,7 @@ services:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9090"
+    restart: unless-stopped
   postgres:
     container_name: postgres
     image: postgres:latest

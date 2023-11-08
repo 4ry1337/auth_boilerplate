@@ -2,15 +2,11 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "baseUrl": "src",
-    "outDir": "dist",
     "sourceMap": true,
     "removeComments": true,
-    "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "strict": true
-  }
+  },
+  "include": ["src/**/*"]
 }
