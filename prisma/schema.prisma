@@ -34,16 +34,11 @@ model User {
   role          Role      @default(USER)
 
   sessions Session[]
-  member    Member?
 
   profile Profile?
-  tasks Task[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  roleCreator DepartmentRole[] @relation("RoleCreator")
-  roleUpdater DepartmentRole[] @relation("RoleUpdater")
 
   @@index([email])
 }
@@ -54,8 +49,6 @@ model Profile {
   name String?
   avatar String?
   bio String?
-
-  post Post[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,122 +61,4 @@ model Profile {
 enum Role {
   ADMIN
   USER
-}
-
-model Department {
-  id String @id @default(uuid())
-
-  name        String  @unique
-  description String?
-
-  members Member[]
-
-  roles DepartmentRole[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Member {
-  departmentId String
-  userId       String                   @unique
-  roles        MemberOnDepartmentRole[]
-
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-
-  @@id([departmentId, userId])
-}
-
-model MemberOnDepartmentRole {
-  departmentId String
-  roleId       Int
-  memberId     String
-  assignedAt   DateTime @default(now())
-
-  role   DepartmentRole @relation(fields: [departmentId, roleId], references: [departamentId, id])
-  member Member         @relation(fields: [memberId], references: [userId])
-
-  @@id([departmentId, roleId, memberId])
-}
-
-model DepartmentRole {
-  departamentId String                   @unique
-  id            Int                      @default(autoincrement())
-  label         String
-  description   String?
-  permissions   Permission[]
-  members       MemberOnDepartmentRole[]
-
-  createdBy String?
-  updatedBy String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  creator    User?      @relation("RoleCreator", fields: [createdBy], references: [id], onDelete: SetNull)
-  updater    User?      @relation("RoleUpdater", fields: [updatedBy], references: [id], onDelete: SetNull)
-  department Department @relation(fields: [departamentId], references: [id])
-
-  @@id([departamentId, id])
-}
-
-enum Permission {
-  MANAGEDEPARTMENT
-  MANAGEROLES
-  MANAGEMEMBERS
-  MANAGETASKS
-  MANAGEMESSAGES
-  MANAGENEWS
-}
-
-// News
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  authorId  String
-  files     String[]
-  published DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  user Profile @relation(fields: [authorId], references: [id])
-}
-
-model Project {
-  id String @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Task {
-  id String @id @default(uuid())
-  parentTaskId String?
-  createdBy String
-  assignedBy String
-  assignedTo String
-  assignedAt String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  creator User @relation("taskCreator", fields: [createdBy], references: [id])
-  assigner User @relation("taskCreator", fields: [assignedTo], references: [id])
-
-  parentTask Task? @relation("Subtasks", fields: [parentTaskId], references: [id], onDelete: SetNull)
-  subtasks Task[] @relation("Subtasks")
-}
-
-model Field {
-  id String @id @default(uuid())
-
-  label String
-  values String[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

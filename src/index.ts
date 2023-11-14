@@ -6,7 +6,7 @@ import compression from "compression"
 import cors from "cors"
 import * as dotenv from "dotenv"
 import { CustomError } from "./shared/libs/exceptions"
-import { authRouter, postRouter, userRouter } from "./routes"
+import { authRouter } from "./routes"
 
 
 dotenv.config()
@@ -30,9 +30,6 @@ class Server {
 
     /*---- Routes ----*/
     this.app.use("/api/auth", authRouter.router)
-    this.app.use("/api/user", userRouter.router)
-    this.app.use("/api/admin", userRouter.router)
-    this.app.use("/api/news", postRouter.router)
 
     /*---- Error Handling ----*/
     this.app.use((err: Error, req: Request, res: Response) => {

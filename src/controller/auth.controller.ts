@@ -1,29 +1,9 @@
-import {v4 as uuidv4} from "uuid"
-import prisma from "../database/prisma"
-import {CookieOptions, NextFunction, Request, Response} from "express"
+import {NextFunction, Request, Response} from "express"
 import {BadRequest, Unauthorized} from "../shared/libs/exceptions"
 import {Cookies} from "../shared/enums/cookies"
-import { TokenExpiration } from "../shared/constants/tokens"
-import { token } from "../shared/utils/token"
-import { authService } from "../services"
-
-const defaultCookieOptions: CookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-  domain: process.env.BASE_URL,
-  path: "/",
-}
-
-const refreshTokenCookieOptions: CookieOptions = {
-  ...defaultCookieOptions,
-  maxAge: TokenExpiration.Refresh * 1000,
-}
-
-const accessTokenCookieOptions: CookieOptions = {
-  ...defaultCookieOptions,
-  maxAge: TokenExpiration.Access * 1000,
-}
+import {token} from "../shared/utils/token"
+import {authService} from "../services"
+import { accessTokenCookieOptions, refreshTokenCookieOptions } from "../shared/constants/tokens"
 
 export default class AuthController {
   public async login(req: Request, res: Response, next: NextFunction) {
@@ -47,10 +27,10 @@ export default class AuthController {
       }
       const registrationResult = await authService.registration(email, password)
       res.cookie(
-          Cookies.AccessToken,
-          registrationResult.accessToken,
-          accessTokenCookieOptions,
-        )
+        Cookies.AccessToken,
+        registrationResult.accessToken,
+        accessTokenCookieOptions,
+      )
       res.cookie(
         Cookies.RefreshToken,
         registrationResult.refreshToken,

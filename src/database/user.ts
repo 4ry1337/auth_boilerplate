@@ -1,6 +1,5 @@
 import {Prisma, Role, User} from "@prisma/client"
 import prisma from "./prisma"
-import {v4 as uuidv4} from "uuid"
 import {DefaultArgs} from "@prisma/client/runtime/library"
 import {take} from "../shared/constants/search"
 

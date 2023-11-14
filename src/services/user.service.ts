@@ -1,5 +1,3 @@
-import {PrismaClient} from "@prisma/client"
-import prisma from "../database/prisma"
 import {userRepository} from "../database"
 import {Unauthorized} from "../shared/libs/exceptions"
 import bcrypt from "bcrypt"
